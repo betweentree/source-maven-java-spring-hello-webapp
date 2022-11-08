@@ -1,0 +1,56 @@
+pipeline {
+  agent none
+
+  stages {
+    stage('Checkout') {
+      agent any
+      steps {
+        git branch: 'main', url: 'https://github.com/betweentree/source-maven-java-spring-hello-webapp.git'
+      }
+    }
+    stage('Build') {
+      agent {
+        docker { image 'maven:3-openjdk-8' }
+      }
+      steps {
+        sh 'mvn clean package -DskipTests=true'
+      }
+    }
+    stage('Test') {
+      agent {
+        docker { image 'maven:3-openjdk-8' }
+      }
+      steps {
+        sh 'mvn test'
+      }
+    }
+    stage('Build Docker Image') {
+      agent any
+      steps {
+        sh 'docker image build jenkins-docker'
+      }
+    }
+    stage('Tag Docker Image') { //tag 다는것은 위에할수있지만 별도의 stage로 뺌
+      agent any
+      steps {
+        sh 'docker image tag lts-jdk11-2'
+      }
+    }
+    stage('Publish Docker Image') {
+      agent any
+      steps {
+        withDockerRegistry(credentialsId: 'docker-hub-token', url: 'https://index.docker.io/v1/') {
+          sh 'docker image push betweentree01/jenkins-docker:lts-jdk11-2'
+        }
+      }
+    }
+    stage('Run Docker Container') {
+      agent {
+        docker { image 'docker:dind' }
+      }
+      steps { //2375번포트는 기본 포트
+        sh 'docker -H tcp://54.180.78.13:2375 container run --detach --name jenkins-docker2 -p 80:8080 jenkins-docker:lts-jdk11-2:$BUILD_NUMBER'
+      }
+    }
+  }
+}
