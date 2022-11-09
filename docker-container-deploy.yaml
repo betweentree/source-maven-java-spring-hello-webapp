@@ -1,0 +1,11 @@
+- hosts: localhost
+  connection: localhost
+
+  tasks:
+  - name: Create & Start Container
+    docker_container:
+      name: myweb
+      image: "betweentree01/hello-world2:{{ lookup('env','BUILD_NUMBER') }}"
+      state: started
+      ports:
+      - "80:8080"
