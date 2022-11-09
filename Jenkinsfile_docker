@@ -51,7 +51,7 @@ pipeline {
         docker { image 'docker:dind' }
       }
       steps { //2375번포트는 기본 포트
-        sh 'docker -H tcp://54.180.78.13:2375 container run --detach --name hello-world -p 80:8080 betweentree01/hello-world:$BUILD_NUMBER'
+        sh 'docker -H tcp://172.31.29.187:2375 container run --detach --name hello-world -p 80:8080 betweentree01/hello-world:$BUILD_NUMBER'
       }
     }
   }
