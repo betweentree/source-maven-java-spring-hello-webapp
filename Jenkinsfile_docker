@@ -42,6 +42,7 @@ pipeline {
       steps {
         withDockerRegistry(credentialsId: 'docker-hub-token', url: 'https://index.docker.io/v1/') {
           sh 'docker image push betweentree01/hello-world:latest'
+          sh 'docker image push betweentree01/hello-world:$BUILD_NUMBER'
         }
       }
     }
@@ -50,7 +51,7 @@ pipeline {
         docker { image 'docker:dind' }
       }
       steps { //2375번포트는 기본 포트
-        sh 'docker -H tcp://54.180.78.13:2375 container run --detach --name jenkins-docker2 -p 80:8080 hello-world:$BUILD_NUMBER'
+        sh 'docker -H tcp://54.180.78.13:2375 container run --detach --name hello=world -p 80:8080 hello-world:$BUILD_NUMBER'
       }
     }
   }
