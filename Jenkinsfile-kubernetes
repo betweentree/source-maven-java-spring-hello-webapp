@@ -74,7 +74,7 @@ spec:
         githubRepo = 'devops-deploy-kube-object' //jenkins-kube-deploy
         githubURL = "https://github.com/${githubId}/${githubRepo}.git"
         dockerhubId = 'betweentree01' //c1t1d0s7
-        dockerhubRepo = 'hellow-world2' //hello-world
+        dockerhubRepo = 'hellow-world' //hello-world
       }
       steps {
         container('git') {
