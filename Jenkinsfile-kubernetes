@@ -62,19 +62,21 @@ spec:
     stage('Build & Tag & Push Docker Image') {
       steps {
         container('kaniko') {
-          sh 'executor --context=dir://$WORKSPACE --destination=c1t1d0s7/hello-world:$BUILD_NUMBER --destination=c1t1d0s7/hello-world:latest'
+          sh 'executor --context=dir:///home/jenkins/agent/workspace/kube_pipeline/ --destination=betweentree01/hello-world:$BUILD_NUMBER --destination=betweentree01/hello-world:latest'
         }
       }
     }
     stage('Update K8s Manifests & Push') {
       environment {
-        githubUser = 'betweentree'
-        githubEmail = 'betweentree01@gmail.com'
-        githubId = 'betweentree'
-        githubRepo = 'devops-deploy-kube-object'
+        githubUser = 'betweentree' //Ryan Jang
+        githubEmail = 'betweentree01@gmail.com' //c1t1d0s7@example.com
+        githubId = 'betweentree' //c1t1d0s7 
+        githubRepo = 'devops-deploy-kube-object' //jenkins-kube-deploy
         githubURL = "https://github.com/${githubId}/${githubRepo}.git"
-        dockerhubId = 'betweentree01'
-        dockerhubRepo = 'hello-world'
+        dockerhubId = 'betweentree01' //c1t1d0s7
+        dockerhubRepo = 'hellow-world2' //hello-world
+      }
+      steps {
         container('git') {
           git branch: 'main', credentialsId: 'github-credential', url: "${githubURL}"
           sh "git config --global --add safe.directory ${workspace}"
